@@ -1,6 +1,73 @@
-# Dataset Description
+# CSIRO Pasture Biomass Prediction - Dataset Description
+
+## Description
+
+Farmers often walk into a paddock and ask one question: "Is there enough grass here for the herd?" It sounds simple, but the answer is anything but. Pasture biomass - the amount of feed available - shapes when animals can graze, when fields need a break, and how to keep pastures productive season after season.
+
+Estimate incorrectly, and the land suffers; feed goes to waste, and animals struggle. Get it right and everyone wins: better animal welfare, more consistent production, and healthier soils.
+
+Current methods make this assessment more challenging than it could be. The old-school "clip and weigh" method is accurate but slow and impossible at scale. Plate meters and capacitance meters can provide quicker readings, but are unreliable in variable conditions. Remote sensing enables broad-scale monitoring, but it still requires manual validation and can't separate biomass by species.
+
+This competition challenges you to bring greener solutions to the field: build a model that predicts pasture biomass from images, ground-truth measures, and publicly available datasets. You'll work with a professionally annotated dataset covering Australian pastures across different seasons, regions, and species mixes, along with NDVI values to enhance your models.
+
+If you succeed, you won't just improve estimation methods. You'll help farmers make smarter grazing choices, enable researchers to track pasture health more accurately, and drive the agriculture industry toward more sustainable and productive systems.
+
+---
+
+## Evaluation
+
+### Scoring
+
+The model performance is evaluated using a **globally weighted coefficient of determination (R²)** computed over all (image, target) pairs together.
+
+Each row is weighted according to its target type using the following weights:
+
+- **Dry_Green_g**: 0.1
+- **Dry_Dead_g**: 0.1
+- **Dry_Clover_g**: 0.1
+- **GDM_g**: 0.2
+- **Dry_Total_g**: 0.5
+
+This means that instead of calculating R² separately for each target and then averaging, a single weighted R² is computed using all rows combined, with the above per-row weights applied.
+
+### R² Calculation
+
+The weighted coefficient of determination $R²_w$ is calculated as:
+
+$$
+R²_w = 1 - \frac{\sum_j w_j(y_j - \hat{y}_j)^2}{\sum_j w_j(y_j - \bar{y}_w)^2}
+$$
+
+where $\bar{y}_w = \frac{\sum_j w_j y_j}{\sum_j w_j}$
+
+#### Residual Sum of Squares $SS_{res}$
+
+Measures the total error of the model's predictions:
+
+$$
+SS_{res} = \sum_j w_j(y_j - \hat{y}_j)^2
+$$
+
+#### Total Sum of Squares $SS_{tot}$
+
+Measures the total weighted variance in the data:
+
+$$
+SS_{tot} = \sum_j w_j(y_j - \bar{y}_w)^2
+$$
+
+#### Terms
+
+- $y_j$: ground-truth value for data point $j$
+- $\hat{y}_j$: model prediction for data point $j$
+- $w_j$: per-row weight based on target type
+- $\bar{y}_w$: global weighted mean of all ground-truth values
+
+---
 
 ## Competition Overview
+
+The competition requires predicting the following 5 biomass components:
 
 * Dry green vegetation (excluding clover)
 * Dry dead material
